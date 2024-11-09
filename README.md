@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 5주차 미션: Next-Netflix
 
-## Getting Started
+# 결과물
 
-First, run the development server:
+- [베포 링크](https://next-netflix-20th-gamma.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Key Questions
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## React 18 버전의 변경점에 대해 설명해주세요.(+ 19 버전에 대한 추가 설명도 좋습니다)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+React 18버전은 서버 컴포넌트와 클라이언트 컴포넌트의 구분, lazy loading과 Suspense 기능, 자동 배칭 기능 등을 도입했다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 자동 배칭
 
-## Learn More
+- 자동 배칭은 여러 개의 상태 업데이트를 묶어 한 번의 렌더링으로 처리하여 성능을 높이는 것이다.
+- 18 이전 버전에서도 이벤트 핸들러에서는 자동 배칭이 지원되었다.
+  - 예를 들어, 이벤트 핸들러 내에서 `setState` 함수로 여러 상태가 변경되어도 렌더링은 한 번만 일어났다.
+  - 하지만 `setTimeout` 등의 비동기 함수에서는 자동 배칭이 적용되지 않아 `setTimeout` 내의 `setState` 함수는 각각 렌더링을 요구했다.
+- 하지만 18부터는 비동기 함수 내에서도 자동 배칭이 지원되도록 했다.
 
-To learn more about Next.js, take a look at the following resources:
+### 서버 및 클라이언트 컴포넌트
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 서버 컴포넌트
+  - 서버에서 데이터를 렌더링해 HTML로 전달한다.
+  - 서버에서만 처리되는 컴포넌트로, 상태나 유저의 인터랙션이 필요 없는 UI에 주로 사용된다.
+  - ex) 정적 데이터렌더링, SEO를 위한 데이터 로드
+  - 클라이언트로 불필요한 자바스크립트를 보내지 않으므로 로딩 속도가 빠르고 성능이 향상된다.
+- 클라이언트 컴포넌트
+  - 브라우저에서 실행되며, 상태 관리나 이벤트 핸들링이 필요한 경우에 사용된다.
+  - 클라이언트 컴포넌트 내에서 서버 컴포넌트를 가져와 함께 사용할 수 있다.
+  - 주로 사용자와의 상호작용이 요구되는 UI 요소에 사용된다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Lazy Loading과 Suspense
 
-## Deploy on Vercel
+- Lazy Loading
+  - 컴포넌트를 필요할 때까지 로드하지 않고, 사용자가 해당 컴포넌트를 필요로 할 때 로드함으로써 초기 로딩 시간을 줄일 수 있다.
+  - `React.lazy()`를 사용하여 설정할 수 있다.
+- Suspense
+  - 비동기적으로 로드되는 컴포넌트를 감싸 로딩 중인 상태를 처리할 수 있도록 한 컴포넌트이다.
+  - `Suspense`를 사용하여 불러올 수 있고, `fallback` 속성으로 데이터를 불러오는 동안 보여줄 로딩 UI를 전달할 수 있다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## nextJS 13 이후의 app routing 방식의 특징과 기능에 대해 설명해주세요.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### app router
+
+- 13 이전에는 `pages` 디렉토리 안의 파일들을 라우트로 변환했다. 페이지별로 하나의 파일이 필요하다.
+- 13부터는 `app` 디렉토리를 사용하며, `layout.js`, `page.ts` 파일을 통해서 라우팅할 수 있다.
+- `layout.js` 파일은 중첩된 레이아웃을 관리한다. 각 페이지마다 공통된 UI를 제공할 수 있다.
+- `page.ts`는 실제 페이지 콘텐츠를 정의한다.
+
+### 패러렐(Parallel) 라우트
+
+- 하나의 페이지 내에서 동시에 여러 라우트를 렌더링할 수 있다.
+  - 대시보드나 소셜 미디어 피드 등에서 사용하기 좋다.
+- 병렬 라우팅은 명명된 슬롯(@folder)을 사용하여 구현된다. 각 슬롯은 독립적으로 렌더링되며, URL 구조에 영향을 미치지 않는다.
+- 병렬 라우팅을 사용하면 인증 상태나 기타 조건에 따라 렌더링할 콘텐츠를 선택할 수 있.
+  - ex) 로그인 상태에 따라 대시보드와 로그인 페이지를 선택적으로 렌더링하기
+- 병렬 라우트에서 URL과 일치하지 않는 슬롯은 default.js 파일로 대체된다. 만약 default.js가 없으면 404 페이지가 표시됩니다.
+
+### 인터셉팅(Intercepting) 라우트
+
+- 페이지 이동 중에 특정 동작을 처리할 수 있다.
+  - ex) 로딩 상태, 에러 처리, 추가 데이터 받아오기 등
+  - (..): 한 단계 위의 디렉토리에서 라우트를 가로채기
+  - (...): app 디렉토리 기준으로 라우트를 가로채기
+- Hard Navigation
+  - 전체 페이지 새로 고침: 페이지 이동 시 현재 페이지를 완전히 벗어나서 새로운 페이지를 서버에서 다시 가져온다.
+  - 페이지 상태 초기화: 새로고침이나 페이지 이동 시 모든 상태가 초기화된다.
+  - 네트워크 요청: 서버에서 새로운 콘텐츠를 요청하는 방식이기 때문에 페이지 이동 시 네트워크 요청이 발생한다.
+- Soft Navigation
+  - 페이지 새로 고침 없음: 페이지 이동 시 전체 페이지를 새로 고침하지 않고, 필요한 데이터나 콘텐츠만을 클라이언트 사이드에서 동적으로 업데이트한다.
+  - 상태 유지: 페이지 이동 후에도 페이지의 상태가 유지된다.
+  - 빠른 전환: 페이지가 완전히 새로 로드되지 않는다.
+
+## vercel, netlify 같은 호스팅 플랫폼의 특징과 내부 구현 원리에 대해 설명해주세요(+ aws의 스토리지와 인스턴스 등 생태계에 대해서도 알려주세요)
+
+- Vercel
+  - Vercel은 Next.js의 개발사로, 클라우드 기반의 플랫폼으로 웹 애플리케이션을 빠르게 배포하고 최적화해준다.
+  - CI/CD 자동화: Vercel은 GitHub 등에 연동해 커밋이 발생할 때마다 자동으로 빌드하고 배포한다.
+  - 서버리스 기능: Vercel은 서버리스 아키텍처를 지원하여, 클라이언트의 요청에 따라 서버리스 함수가 트리거된다. AWS Lambda와 유사한 방식으로 동작하며, 요청 시에만 실행되고, 실행이 끝나면 서버 자원은 자동으로 해제된다.
+  - 캐싱과 엣지 네트워크: 전 세계에 분산된 CDN(Content Delivery Network)을 통해 정적 콘텐츠를 캐싱하고, 클라이언트에게 제공한다.
+- Netlify
+
+  - Netlify는 Jamstack(JavaScript, API, Markup) 아키텍처에 최적화된 호스팅 플랫폼으로, 주로 정적 사이트와 서버리스 함수의 배포를 할 수 있다.
+  - CI/CD 파이프라인: Netlify는 Git 저장소와 연결해 변경 사항이 발생하면 자동으로 애플리케이션을 빌드하고 배포한다.
+  - 서버리스 함수 지원: Netlify Functions는 AWS Lambda와 유사한 서버리스 함수 기능을 제공한다.
+  - 내부 CDN 및 엣지 네트워크: Netlify는 글로벌 CDN을 통해 정적 에셋을 빠르게 제공하며, 특정 페이지나 API 호출을 위한 엣지 네트워크 최적화로 성능을 높일 수 있다.
+
+- AWS(Amazon Web Services)
+  - AWS는 클라우드 기반의 다양한 인프라 및 서비스 제공업체로, 개발자와 기업들이 웹 애플리케이션, 데이터베이스, 서버리스 시스템을 손쉽게 관리하고 확장할 수 있도록 한다.
+  - AWS S3: AWS의 S3(Simple Storage Service)는 스토리지 서비스로, 정적 웹사이트 호스팅, 데이터 아카이빙, 백업 등에 자주 사용된다.
+  - EC2 인스턴스: Amazon EC2(Elastic Compute Cloud)는 가상 서버를 제공하는 서비스이다. EC2 인스턴스에 운영 체제와 애플리케이션을 설치하여 애플리케이션을 호스팅할 수 있다. 확장 및 축소도 가능하다.
+  - AWS Lambda: AWS Lambda는 서버리스 컴퓨팅 서비스를 제공하여, 특정 이벤트에 대해 자동으로 실행되는 함수를 작성할 수 있다. 효율적인 서버리스 아키텍처를 구현할 수 있다.
+  - 데이터베이스 및 API 서비스: AWS는 RDS(Relational Database Service)와 DynamoDB(NoSQL)와 같은 다양한 데이터베이스 서비스를 제공한다.
+
+# 참고
+
+- https://nextjs.org/docs/app/building-your-application/routing/parallel-routes
+- https://rocketengine.tistory.com/entry/NextJS-13-Routing-Parallel-Routes-%EB%B3%91%EB%A0%AC-%EB%9D%BC%EC%9A%B0%ED%8A%B8
+- https://rocketengine.tistory.com/entry/NextJS-13-Routing-Intercepting-Routes%EB%9D%BC%EC%9A%B0%ED%8A%B8-%EA%B0%80%EB%A1%9C%EC%B1%84%EA%B8%B0?category=1127295
+- https://velog.io/@hyunjoong/Next.js-13-Parallel-Intercepting-Routes-jxn0qt37
