@@ -1,5 +1,7 @@
-import { ReactNode } from 'react';
-import styled from 'styled-components';
+import { ReactNode } from "react";
+import styled from "styled-components";
+import TNB from "./TNB";
+import BNB from "./BNB";
 
 // height만 자동으로 변합니다
 const Container = styled.div`
@@ -39,8 +41,10 @@ const Indicator = styled.div`
 export default function ScreenWrapper({ children }: { children: ReactNode }) {
   return (
     <Container>
+      <TNB />
       <Content>{children}</Content>
 
+      <BNB />
       <BottomBar>
         <Indicator />
       </BottomBar>
