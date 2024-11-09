@@ -2,9 +2,10 @@ import { MovieProps } from '@/types/MovieProps';
 import Link from 'next/link';
 import styled from 'styled-components';
 
-const PlayButton = ({ id }: MovieProps) => {
+// 전역으로 뺀 이유 : 영화 상세페이지에서 길게 또 쓰임
+const PlayButton = ({ movie }: { movie: MovieProps }) => {
   return (
-    <Link href={`/movie/${id}` || '/'}>
+    <StyledLink href={`/movie/${movie.id}` || '/'}>
       <StyledPlayButton>
         <img
           src="/icon/playIcon.png"
@@ -12,12 +13,15 @@ const PlayButton = ({ id }: MovieProps) => {
         />
         <span>Play</span>
       </StyledPlayButton>
-    </Link>
+    </StyledLink>
   );
 };
 
 export default PlayButton;
 
+const StyledLink = styled(Link)`
+  text-decoration: none; // Link 자체에 스타일 적용
+`;
 const StyledPlayButton = styled.div`
   display: flex;
   align-items: center;
@@ -37,6 +41,5 @@ const StyledPlayButton = styled.div`
     font-size: 20px;
     font-weight: bold;
     color: black;
-    text-decoration: none;
   }
 `;
